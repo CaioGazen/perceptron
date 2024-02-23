@@ -64,45 +64,57 @@ def carregarImagensTreino():
 
         yDesejado = [0 for k in range(N_DIGITOS)]
         yDesejado[i] = 1
-        print(yDesejado)
+        
         j = 0
         while os.path.isfile(path + str(j) + '.png'):
             image = imread(path + str(j) + '.png')
             image = np.sum(image, 2)
             image = image.ravel()
-            print(i, j)
 
             conjuntoTreino.append(Dados(image, yDesejado))
             
             j += 1
+
         i += 1
-    print(conjuntoTreino)
 
 
 def classificarTeste():
+    resultados = []
 
     i = 0
-    while os.path.exists('digits_exemples/'+ str(i)) and i < N_DIGITOS:
-        print('digits_exemples/'+ str(i))
-        path = 'digits_exemples/'+ str(i) + '/'
+    while os.path.exists('digits_examples/'+ str(i)) and i < N_DIGITOS:
+        path = 'digits_examples/'+ str(i) + '/'
 
         yDesejado = [0 for k in range(N_DIGITOS)]
         yDesejado[i] = 1
-        print(yDesejado)
+
         j = 0
         while os.path.isfile(path + str(j) + '.png'):
             image = imread(path + str(j) + '.png')
             image = np.sum(image, 2)
             image = image.ravel()
-            print(i, j)
 
-            conjuntoTreino.append(Dados(image, yDesejado))
+            dado = Dados(image, yDesejado)
+
+            resultados.append([dado, classificar(neoronios, dado)])
             
             j += 1
+        
         i += 1
-    print(conjuntoTreino)
 
+    return resultados
 
+teste = {
+    str([0,0]): "nenhum ",
+    str([0,1]): "   1   ",
+    str([1,0]): "   0   ",
+    str([1,1]): "  0,1  "
+}
+
+def compararResultados(resultados):
+    print("  Valor Real | Classificacao | indice ")
+    for i in range(len(resultados)):
+        print("  ",teste[str(resultados[i][0].yDesejado)],"  |   ", teste[str(resultados[i][1])],"   | ", i)
 
 neoronios = [Neoronio(16384), Neoronio(16384)]
 
@@ -135,16 +147,17 @@ def treinar(neoronios, conjuntoTreino):
         erroEpoca = calcularErroEpoca(errosMediosVetorEntrada)
         print(erroEpoca)
 
-def dignosticar(neoronios, dados):
+def classificar(neoronios, dados):
+    resultado = []
     for i in range(len(neoronios)):
         neoronios[i].calcularV(dados.vetorEntrada)
 
         neoronios[i].funcaoAtivacao(neoronios[i].v)
 
-        if neoronios[i].y == 1:
-            print("\n\n    O diagnostico do programa é: " + doencas[i])
-            print("\n\n aperte qualquer tecla para continuar")
-            input()
+        resultado.append(neoronios[i].y)
+    return resultado
+
+
 
 
 
@@ -154,7 +167,7 @@ while not exit:
     print("""
         Escolha uma das alternativas a baixo
             1 - treinar rede neural
-            2 - fazer um diagnostico
+            2 - classificar
             3 - sair
     """)
 
@@ -163,7 +176,9 @@ while not exit:
             carregarImagensTreino()
             treinar(neoronios, conjuntoTreino)
         case "2":
-            pass
+            resultados = classificarTeste()
+            compararResultados(resultados)
+
         case "3": 
             exit = True
         case _:
