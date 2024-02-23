@@ -1,9 +1,12 @@
+from matplotlib.image import imread
 import numpy as np
 import random
-
+import os
 
 COEF_APRENDIZADO = 0.5
 
+N_DIGITOS = 2
+ 
 
 class Neoronio:
     def __init__(self, numeroSinapses):
@@ -48,19 +51,60 @@ def calcularErroEpoca(errosMediosVetorEntrada):
     erroEpoca = erroEpoca/len(errosMediosVetorEntrada)
     return erroEpoca
 
-doencas = ["gripe", "dengue", "catapora"]
-
-sintomas = ["Tosse", "Congestao Nasal", "Febre", "Dor", "Manchas", "Nauseas", "Fraquesa", "Bolhas", "Coceira"]
-
-conjuntoTreino = [
-        Dados([1,1,1,1,1,0,0,1,0,0], [1, 0, 0]),
-        Dados([1,0,0,1,1,1,1,1,0,0], [0, 1, 0]), 
-        Dados([1,0,0,1,0,1,0,1,1,1], [0, 0, 1])
-    ]
 
 
 
-neoronios = [Neoronio(10), Neoronio(10), Neoronio(10)]
+conjuntoTreino = []
+
+def carregarImagensTreino():
+    i = 0
+    while os.path.exists('digits_training/'+ str(i)) and i < N_DIGITOS:
+        print('digits_training/'+ str(i))
+        path = 'digits_training/'+ str(i) + '/'
+
+        yDesejado = [0 for k in range(N_DIGITOS)]
+        yDesejado[i] = 1
+        print(yDesejado)
+        j = 0
+        while os.path.isfile(path + str(j) + '.png'):
+            image = imread(path + str(j) + '.png')
+            image = np.sum(image, 2)
+            image = image.ravel()
+            print(i, j)
+
+            conjuntoTreino.append(Dados(image, yDesejado))
+            
+            j += 1
+        i += 1
+    print(conjuntoTreino)
+
+
+def classificarTeste():
+
+    i = 0
+    while os.path.exists('digits_exemples/'+ str(i)) and i < N_DIGITOS:
+        print('digits_exemples/'+ str(i))
+        path = 'digits_exemples/'+ str(i) + '/'
+
+        yDesejado = [0 for k in range(N_DIGITOS)]
+        yDesejado[i] = 1
+        print(yDesejado)
+        j = 0
+        while os.path.isfile(path + str(j) + '.png'):
+            image = imread(path + str(j) + '.png')
+            image = np.sum(image, 2)
+            image = image.ravel()
+            print(i, j)
+
+            conjuntoTreino.append(Dados(image, yDesejado))
+            
+            j += 1
+        i += 1
+    print(conjuntoTreino)
+
+
+
+neoronios = [Neoronio(16384), Neoronio(16384)]
 
 #neoronio[0].sinapses = np.array([0,0,1,1,1,0,0,0,0,0])
 #neoronio[1].sinapses = np.array([1,1,1,1,1,0,0,0,0,0])
@@ -116,14 +160,10 @@ while not exit:
 
     match input():
         case "1":
+            carregarImagensTreino()
             treinar(neoronios, conjuntoTreino)
         case "2":
-            dados = [1]
-            print("informe os sintomas apresentados pelo paciente.")
-            for i in sintomas:
-                print(i + "[0/1]:")
-                dados.append(int(input()))
-            dignosticar(neoronios, Dados(dados, 0))
+            pass
         case "3": 
             exit = True
         case _:
