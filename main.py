@@ -157,17 +157,36 @@ def classificar(neoronios, dados):
         resultado.append(neoronios[i].y)
     return resultado
 
+def live(neoronios):
+    sair = False
+    while not sair:
+            while os.path.isfile("live.sig") == False:
+                pass
+            
+            os.remove("live.sig")
+            
+            image = imread("live.png")
+            image = np.sum(image, 2)
+            image = image.ravel()
+
+            yDesejado = 0
+
+            dado = Dados(image, yDesejado)
+
+            resultado = classificar(neoronios, dado)
+            print(resultado)
+            print(teste[str(resultado)])
 
 
 
+sair = False
 
-exit = False
-
-while not exit:
+while not sair:
     print("""
         Escolha uma das alternativas a baixo
             1 - treinar rede neural
             2 - classificar
+            4 - live classificar
             3 - sair
     """)
 
@@ -180,6 +199,9 @@ while not exit:
             compararResultados(resultados)
 
         case "3": 
-            exit = True
+            sair = True
+
+        case "4":
+            live(neoronios)
         case _:
             print("alternativa invalida")
