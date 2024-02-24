@@ -1,8 +1,8 @@
 import os
 
 CURRENT_DIGIT = "1"
-FOLDER = "digits_examples/"
-#FOLDER = "digits_training/"
+#FOLDER = "digits_examples/"
+FOLDER = "digits_training/"
 START_IMAGE = 0
 
 i = START_IMAGE

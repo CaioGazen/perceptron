@@ -4,6 +4,10 @@ import os
 import cv2 as cv
 import matplotlib.image
 
+CURRENT_DIGIT = "1"
+#FOLDER = "digits_examples/"
+FOLDER = "digits_training/"
+
 # Create a black image, a window and bind the function to window
 img = np.full((128,128,3), 255, np.uint8)
 
@@ -13,10 +17,7 @@ LBDown = False
 
 def save():
 
-    matplotlib.image.imsave("live.png", img)
-
-    f = open("live.sig", "x")
-    f.close()
+    matplotlib.image.imsave(FOLDER + CURRENT_DIGIT + '/Untitled.png', img)
 
 # create function to draw circle on mouse click
 def draw_circle(event, x, y, flags, param):
@@ -27,8 +28,6 @@ def draw_circle(event, x, y, flags, param):
 
     if event == cv.EVENT_LBUTTONUP: # check if mouse event is click
         LBDown = False
-        save()
-
 
     if LBDown == True:
         cv.circle(img, (x, y), 5, (0,0,0), -1) # draw filled circle with 100px radius
@@ -37,12 +36,15 @@ def draw_circle(event, x, y, flags, param):
 cv.namedWindow('image')
 cv.setMouseCallback('image',draw_circle)
 
-while(1):
+while(1): 
     cv.imshow('image',img)
-    if cv.waitKey(20) & 0xFF == 27:
-        img = np.full((128,128,3), 255, np.uint8)
+    k = cv.waitKey(20) & 0xFF
 
-save()
+    if k == 32:
+        save()
+        img = np.full((128,128,3), 255, np.uint8)
+    elif k == 27:
+        break
 
 
 
