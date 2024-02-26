@@ -4,11 +4,12 @@ import os
 import cv2 as cv
 import matplotlib.image
 
-CURRENT_DIGIT = "1"
+CURRENT_DIGIT = "0"
 #FOLDER = "digits_examples/"
 FOLDER = "digits_training/"
 
 # Create a black image, a window and bind the function to window
+global img
 img = np.full((128,128,3), 255, np.uint8)
 
 
@@ -17,12 +18,15 @@ LBDown = False
 
 def save():
 
-    matplotlib.image.imsave(FOLDER + CURRENT_DIGIT + '/Untitled.png', img)
+    matplotlib.image.imsave(FOLDER + CURRENT_DIGIT +  '/Untitled.png', img)
 
 # create function to draw circle on mouse click
 def draw_circle(event, x, y, flags, param):
-    global LBDown
+    global LBDown, img
 
+    if event == cv.EVENT_RBUTTONDOWN:
+        img = np.full((128,128,3), 255, np.uint8)
+    
     if event == cv.EVENT_LBUTTONDOWN: # check if mouse event is click
         LBDown = True
 
