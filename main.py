@@ -3,7 +3,7 @@ import numpy as np
 import random
 import os
 
-COEF_APRENDIZADO = 0.5
+COEF_APRENDIZADO = 0.6
 
 N_DIGITOS = 2
 
