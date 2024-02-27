@@ -3,10 +3,9 @@ import numpy as np
 import random
 import os
 
-COEF_APRENDIZADO = 0.6
+COEF_APRENDIZADO = 0.5
 
 N_DIGITOS = 2
-
 
 class Neoronio:
     def __init__(self, numeroSinapses):
@@ -56,10 +55,8 @@ def calcularErroEpoca(errosMediosVetorEntrada):
     return erroEpoca
 
 
-conjuntoTreino = []
-
-
 def carregarImagensTreino():
+    conjuntoTreino = []
     i = 0
     while os.path.exists('digits_training/' + str(i)) and i < N_DIGITOS:
         print('digits_training/' + str(i))
@@ -79,9 +76,10 @@ def carregarImagensTreino():
             j += 1
 
         i += 1
+    return conjuntoTreino
 
 
-def classificarTeste():
+def classificarTeste(neoronios):
     resultados = []
 
     i = 0
@@ -108,26 +106,33 @@ def classificarTeste():
     return resultados
 
 
-teste = {
+
+def interpretarResultado(resultado):
+    indice = {
     str([0, 0]): "nenhum ",
     str([0, 1]): "   1   ",
     str([1, 0]): "   0   ",
     str([1, 1]): "  0,1  "
-}
+    }
+    return indice[str(resultado)]
 
 
 def compararResultados(resultados):
     print("  Valor Real | Classificacao | indice ")
     for i in range(len(resultados)):
-        print("  ", teste[str(resultados[i][0].yDesejado)],
-              "  |   ", teste[str(resultados[i][1])], "   | ", i)
+        print("  ", interpretarResultado(resultados[i][0].yDesejado),
+              "  |   ", interpretarResultado(resultados[i][1]), "   | ", i)
 
 
-neoronios = [Neoronio(16384), Neoronio(16384)]
 
-# neoronio[0].sinapses = np.array([0,0,1,1,1,0,0,0,0,0])
-# neoronio[1].sinapses = np.array([1,1,1,1,1,0,0,0,0,0])
-# neoronio[2].sinapses = np.array([0,0,0,0,0,1,1,1,1,1])
+def instanciarNeoronios():
+    neoronios = []
+
+    for i in range(N_DIGITOS):
+        neoronios.append(Neoronio(16384))
+
+    return neoronios
+
 
 
 def treinar(neoronios, conjuntoTreino):
@@ -187,32 +192,38 @@ def live(neoronios):
 
         resultado = classificar(neoronios, dado)
         print(resultado)
-        print(teste[str(resultado)])
+        print(interpretarResultado(resultado))
 
 
-sair = False
+def main():
+    neoronios = instanciarNeoronios()
+    sair = False
 
-while not sair:
-    print("""
-        Escolha uma das alternativas a baixo
-            1 - treinar rede neural
-            2 - classificar
-            4 - live classificar
-            3 - sair
-    """)
+    while not sair:
+        print("""
+            Escolha uma das alternativas a baixo
+                1 - treinar rede neural
+                2 - classificar
+                4 - live classificar
+                3 - sair
+        """)
 
-    match input():
-        case "1":
-            carregarImagensTreino()
-            treinar(neoronios, conjuntoTreino)
-        case "2":
-            resultados = classificarTeste()
-            compararResultados(resultados)
+        match input():
+            case "1":
+                conjuntoTreino = carregarImagensTreino()
+                treinar(neoronios, conjuntoTreino)
+            case "2":
+                resultados = classificarTeste(neoronios)
+                compararResultados(resultados)
 
-        case "3":
-            sair = True
+            case "3":
+                sair = True
 
-        case "4":
-            live(neoronios)
-        case _:
-            print("alternativa invalida")
+            case "4":
+                live(neoronios)
+            case _:
+                print("alternativa invalida")
+
+
+if __name__ == "__main__":
+    main()
