@@ -2,6 +2,7 @@ from matplotlib.image import imread
 import numpy as np
 import random
 import os
+import pickle
 
 COEF_APRENDIZADO = 0.5
 
@@ -153,14 +154,14 @@ def treinar(neoronios, conjuntoTreino):
 
                 neoronios[j].atualizarSinapses(conjuntoTreino[i].vetorEntrada)
 
-                print(neoronios[j].sinapses)
+                #print(neoronios[j].sinapses)
 
-            print(errosNeoronios)
+            #print(errosNeoronios)
             errosMediosVetorEntrada.append(
                 calcularErroMedioVetorEntrada(errosNeoronios))
 
         erroEpoca = calcularErroEpoca(errosMediosVetorEntrada)
-        print(erroEpoca)
+        print("Erro da epoca: ", erroEpoca)
 
 
 def classificar(neoronios, dados):
@@ -194,6 +195,14 @@ def live(neoronios):
         print(resultado)
         print(interpretarResultado(resultado))
 
+def salvar(obj, fileName):
+    with open(fileName + '.pkl', 'wb') as outputFile:  # Overwrites any existing file.
+        pickle.dump(obj, outputFile, pickle.HIGHEST_PROTOCOL)
+
+def carregar(fileName):
+    with open(fileName + '.pkl', 'rb') as inputFile:
+        return pickle.load(inputFile)
+
 
 def main():
     neoronios = instanciarNeoronios()
@@ -202,10 +211,12 @@ def main():
     while not sair:
         print("""
             Escolha uma das alternativas a baixo
-                1 - treinar rede neural
-                2 - classificar
-                4 - live classificar
-                3 - sair
+                1 - Treinar rede neural
+                2 - Classificar
+                3 - Live classificar
+                4 - Salvar
+                5 - Carregar
+                6 - Sair
         """)
 
         match input():
@@ -217,10 +228,17 @@ def main():
                 compararResultados(resultados)
 
             case "3":
-                sair = True
+                live(neoronios)
 
             case "4":
-                live(neoronios)
+                salvar(neoronios, input("Digite o nome do aquivo a ser salvo: "))
+                print("Arquivo salvo com sucesso")
+            case "5":
+                neoronios = carregar(input("Digite o nome do aquivo que deseja carregar: "))
+                print("Arquivo carregado com sucesso")
+
+            case "6":
+                sair = True
             case _:
                 print("alternativa invalida")
 
