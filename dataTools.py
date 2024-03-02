@@ -73,27 +73,26 @@ def interpretarResultado(resultado):
         if resultado[i] and flag == 0:
             resultadoInterpretado = str(i)
             flag = 1
-
         
     if resultadoInterpretado == "":
         resultadoInterpretado = "nenhum " 
 
-
-    #indice = {
-    #str([0, 0]): "nenhum ",
-    #str([0, 1]): "   1   ",
-    #str([1, 0]): "   0   ",
-    #str([1, 1]): "  0,1  "
-    #}
 
     return resultadoInterpretado
 
 
 def compararResultados(resultados):
     print("  Valor Real | Classificacao | indice ")
+    contadorAcertos = 0
     for i in range(len(resultados)):
-        print("  ", interpretarResultado(resultados[i][0].yDesejado),
-              "  |   ", interpretarResultado(resultados[i][1]), "   | ", i)
+        resultadoDesejado = interpretarResultado(resultados[i][0].yDesejado)
+        resultadoReal = interpretarResultado(resultados[i][1])
+        if resultadoDesejado == resultadoReal: contadorAcertos += 1
+        print("  ", resultadoDesejado,
+              "  |   ", resultadoReal, "   | ", i)
+    print("taxa de acertos", (contadorAcertos/len(resultados))*100)
+
+    
 
 
 def salvar(obj, fileName):
