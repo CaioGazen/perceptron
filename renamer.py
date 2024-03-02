@@ -1,6 +1,6 @@
 import os
 
-CURRENT_DIGIT = "0"
+CURRENT_DIGIT = "2"
 #FOLDER = "digits_examples/"
 FOLDER = "digits_training/"
 START_IMAGE = 0

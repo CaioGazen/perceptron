@@ -3,22 +3,31 @@ import numpy as np
 import os
 import cv2 as cv
 import matplotlib.image
+from threading import Thread
 
-CURRENT_DIGIT = "0"
-#FOLDER = "digits_examples/"
-FOLDER = "digits_training/"
+
+
 
 # Create a black image, a window and bind the function to window
-global img
+global img, LBDown, FOLDER, CURRENT_DIGIT, currentImage
+
 img = np.full((128,128,3), 255, np.uint8)
 
-
-global LBDown
 LBDown = False
+currentImage = 0
 
 def save():
+    global img, LBDown, FOLDER, CURRENT_DIGIT, currentImage
 
-    matplotlib.image.imsave(FOLDER + CURRENT_DIGIT +  '/Untitled.png', img)
+    while (1):
+        if os.path.isfile(FOLDER + CURRENT_DIGIT +'/'+ str(currentImage) +'.png') == False:
+            matplotlib.image.imsave(FOLDER + CURRENT_DIGIT +'/'+ str(currentImage) +'.png', img)
+            print("saved image to "+ str(currentImage) + '.png')
+            currentImage+= 1
+            break
+
+        currentImage+= 1
+
 
 # create function to draw circle on mouse click
 def draw_circle(event, x, y, flags, param):
@@ -36,20 +45,45 @@ def draw_circle(event, x, y, flags, param):
     if LBDown == True:
         cv.circle(img, (x, y), 5, (0,0,0), -1) # draw filled circle with 100px radius
         
-# create cv2 window and bind callback
-cv.namedWindow('image')
-cv.setMouseCallback('image',draw_circle)
 
-while(1): 
-    cv.imshow('image',img)
-    k = cv.waitKey(20) & 0xFF
+def main():
+    global img, LBDown, FOLDER, CURRENT_DIGIT
 
-    if k == 32:
-        save()
-        img = np.full((128,128,3), 255, np.uint8)
-    elif k == 27:
-        break
+    def chooseFolder():
+        global img, LBDown, FOLDER, CURRENT_DIGIT
+        match input("""
+                1 - trainig
+                2 - examples
+
+                """):
+
+            case "1":
+                FOLDER = "digits_training/"
+            case "2":
+                FOLDER = "digits_examples/"
+            case _:
+                print("alternativa invalida")
+                chooseFolder()
+
+    chooseFolder()
+    CURRENT_DIGIT = str(input("Digit: "))
+    
+    # create cv2 window and bind callback
+    cv.namedWindow('image')
+    cv.setMouseCallback('image',draw_circle)
+
+    while(1): 
+        cv.imshow('image',img)
+        k = cv.waitKey(20) & 0xFF
+
+        if k == 32:
+            save()
+            img = np.full((128,128,3), 255, np.uint8)
+        elif k == 27:
+            break
+    
+    cv.destroyAllWindows()
 
 
-
-cv.destroyAllWindows()
+if __name__ == "__main__":
+    main()
