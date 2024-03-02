@@ -32,7 +32,7 @@ def main():
                 6 - Sair
         """)
 
-        match input():
+        match input("Escolha uma opção: "):
             case "1":
                 conjuntoTreino = carregarImagensTreino()
                 treinar(neoronios, conjuntoTreino)
