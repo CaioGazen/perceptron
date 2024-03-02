@@ -69,11 +69,11 @@ def main():
     CURRENT_DIGIT = str(input("Digit: "))
     
     # create cv2 window and bind callback
-    cv.namedWindow('image')
-    cv.setMouseCallback('image',draw_circle)
+    cv.namedWindow(str(CURRENT_DIGIT))
+    cv.setMouseCallback(str(CURRENT_DIGIT),draw_circle)
 
     while(1): 
-        cv.imshow('image',img)
+        cv.imshow(str(CURRENT_DIGIT),img)
         k = cv.waitKey(20) & 0xFF
 
         if k == 32:

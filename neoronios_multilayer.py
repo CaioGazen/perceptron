@@ -1,14 +1,16 @@
 import numpy as np
 import random
 import time
-from functools import cache
+import multiprocessing
+
 COEF_APRENDIZADO = 0.5
 
 
 class Neoronio:
-    def __init__(self, numeroSinapses):
+    def __init__(self, numeroSinapses, layer):
         self.sinapses = np.array([random.randint(0, 1)
                                  for i in range(numeroSinapses)])
+        self.layer = layer
 
     def calcularV(self, vetorEntrada):
         self.v = np.dot(self.sinapses, vetorEntrada)
@@ -60,6 +62,10 @@ def calcularErroEpoca(errosMediosVetorEntrada):
 def treinar(neoronios, conjuntoTreino):
     start_time = time.time()
     erroEpoca = 1
+
+    #with multiprocessing.Manager as manager:
+    #    errosMedios = manager.list([])
+
     while (erroEpoca >= 0.00001):
         errosMediosVetorEntrada = []
         for i in range(len(conjuntoTreino)):
@@ -78,8 +84,7 @@ def treinar(neoronios, conjuntoTreino):
                 #print(neoronios[j].sinapses)
 
             #print(errosNeoronios)
-            errosMediosVetorEntrada.append(
-                calcularErroMedioVetorEntrada(errosNeoronios))
+            errosMediosVetorEntrada.append(calcularErroMedioVetorEntrada(errosNeoronios))
 
         erroEpoca = calcularErroEpoca(errosMediosVetorEntrada)
         print("Erro da epoca: ", erroEpoca)
