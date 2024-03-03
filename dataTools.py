@@ -3,7 +3,7 @@ import cv2 as cv
 import pickle
 import os
 
-N_DIGITOS = 3
+N_DIGITOS = 1
 
 class Dados:
     def __init__(self, vetorEntrada, yDesejado):

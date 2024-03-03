@@ -3,17 +3,26 @@ import numpy as np
 import random
 import os
 import timeit
-from neoronios import *
+from neoronios_multilayer import *
 from dataTools import *
 
-N_DIGITOS = 3
+N_DIGITOS = 1
+N_CAMADAS = 3
 
 def instanciarNeoronios():
-    neoronios = []
+    neoronios = [[] for i in range(N_CAMADAS)]
 
     for i in range(N_DIGITOS):
-        neoronios.append(Neoronio(16384))
+        neoronios[0].append(Neoronio(16384, 0))
 
+    for i in range(1):
+        for j in range(N_DIGITOS):
+            neoronios[1].append(Neoronio(N_DIGITOS, i))
+
+    for i in range(1):
+        for j in range(N_DIGITOS):
+            neoronios[N_CAMADAS - 1].append(Neoronio(N_DIGITOS, i))
+    
     return neoronios
 
 
