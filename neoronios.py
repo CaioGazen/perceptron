@@ -1,23 +1,24 @@
 import numpy as np
 import random
 import time
-from functools import cache
+
 COEF_APRENDIZADO = 0.5
 
 
 class Neoronio:
     def __init__(self, numeroSinapses):
-        self.sinapses = np.array([random.randint(0, 1)
-                                 for i in range(numeroSinapses)])
+        self.sinapses = np.array([random.randint(0, 1) for i in range(numeroSinapses)])
+        self.sinapses = np.concatenate(([1], self.sinapses))
 
     def calcularV(self, vetorEntrada):
         self.v = np.dot(self.sinapses, vetorEntrada)
 
     def funcaoAtivacao(self, v):
-        if v > 0:
-            self.y = 1
-        else:
-            self.y = 0
+        self.y = (1/(1+np.exp(-COEF_APRENDIZADO*v)))
+        # if v > 0:
+        #     self.y = 1
+        # else:
+        #     self.y = 0
 
     def calcularErro(self, yDesejado):
         self.erro = yDesejado - self.y

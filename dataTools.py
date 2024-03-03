@@ -1,4 +1,3 @@
-from matplotlib.image import imread
 import numpy as np
 import cv2 as cv
 import pickle
@@ -23,9 +22,9 @@ def carregarImagensTreino():
 
         j = 0
         while os.path.isfile(path + str(j) + '.png'):
-            image = imread(path + str(j) + '.png')
-            image = np.sum(image, 2)
+            image = cv.imread(path + str(j) + '.png', 0)
             image = image.ravel()
+            image = np.concatenate(([1],image))
 
             conjuntoTreino.append(Dados(image, yDesejado))
 
@@ -47,9 +46,9 @@ def classificarTeste(neoronios):
 
         j = 0
         while os.path.isfile(path + str(j) + '.png'):
-            image = imread(path + str(j) + '.png')
-            image = np.sum(image, 2)
+            image = cv.imread(path + str(j) + '.png', 0)
             image = image.ravel()
+            image = np.concatenate(([1],image))
 
             dado = Dados(image, yDesejado)
 
@@ -109,9 +108,9 @@ def live(neoronios):
     
     
     def live_classificar():
-        image = np.sum(img, 2)
-        image = image.ravel()
-
+        image = img.ravel()
+        image = np.concatenate(([1],image))
+        
         yDesejado = 0
 
         dado = Dados(image, yDesejado)
@@ -137,7 +136,7 @@ def live(neoronios):
             cv.circle(img, (x, y), 5, (0,0,0), -1) # draw filled circle with 100px radius
 
 
-    img = np.full((128,128,3), 255, np.uint8)
+    img = np.full((128,128), 255, np.uint8)
 
     cv.namedWindow('image')
     cv.setMouseCallback('image',draw_circle)
@@ -149,7 +148,7 @@ def live(neoronios):
         k = cv.waitKey(20) & 0xFF
 
         if k == 32:
-            img = np.full((128,128,3), 255, np.uint8)
+            img = np.full((128,128), 255, np.uint8)
 
         elif k == 27:
             cv.destroyAllWindows()

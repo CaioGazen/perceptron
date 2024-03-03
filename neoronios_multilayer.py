@@ -8,18 +8,14 @@ COEF_APRENDIZADO = 0.5
 
 class Neoronio:
     def __init__(self, numeroSinapses, layer):
-        self.sinapses = np.array([random.randint(0, 1)
-                                 for i in range(numeroSinapses)])
+        self.sinapses = np.array([random.randint(0, 1) for i in range(numeroSinapses)])
         self.layer = layer
 
     def calcularV(self, vetorEntrada):
         self.v = np.dot(self.sinapses, vetorEntrada)
 
     def funcaoAtivacao(self, v):
-        if v > 0:
-            self.y = 1
-        else:
-            self.y = 0
+        self.y = (1/(1+np.exp(-COEF_APRENDIZADO*v)))
 
     def calcularErro(self, yDesejado):
         self.erro = yDesejado - self.y
@@ -58,6 +54,12 @@ def calcularErroEpoca(errosMediosVetorEntrada):
     erroEpoca = erroEpoca/len(errosMediosVetorEntrada)
     return erroEpoca
 
+
+
+def epoca(neoronios, dados):
+    for i in range(len(neoronios)):
+        for j in range(len(neoronios[i])):
+            neoronios[i][j].calcularV()
 
 def treinar(neoronios, conjuntoTreino):
     start_time = time.time()
