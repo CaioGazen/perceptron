@@ -6,28 +6,10 @@ import timeit
 from neoronios_multilayer import *
 from dataTools import *
 
-N_DIGITOS = 1
-N_CAMADAS = 3
-
-def instanciarNeoronios():
-    neoronios = [[] for i in range(N_CAMADAS)]
-
-    for i in range(N_DIGITOS):
-        neoronios[0].append(Neoronio(16384, 0))
-
-    for i in range(1):
-        for j in range(N_DIGITOS):
-            neoronios[1].append(Neoronio(N_DIGITOS, i))
-
-    for i in range(1):
-        for j in range(N_DIGITOS):
-            neoronios[N_CAMADAS - 1].append(Neoronio(N_DIGITOS, i))
-    
-    return neoronios
-
+N_DIGITOS = 2
 
 def main():
-    neoronios = instanciarNeoronios()
+    neoronios = instanciarNeoronios([N_DIGITOS, N_DIGITOS], 16384)  
     sair = False
 
     while not sair:
@@ -43,10 +25,10 @@ def main():
 
         match input("Escolha uma opção: "):
             case "1":
-                conjuntoTreino = carregarImagensTreino()
+                conjuntoTreino = carregarImagensTreino(N_DIGITOS)
                 treinar(neoronios, conjuntoTreino)
             case "2":
-                resultados = classificarTeste(neoronios)
+                resultados = classificarTeste(neoronios, N_DIGITOS)
                 compararResultados(resultados)
 
             case "3":

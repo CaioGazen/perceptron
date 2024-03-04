@@ -3,14 +3,14 @@ import cv2 as cv
 import pickle
 import os
 
-N_DIGITOS = 1
+
 
 class Dados:
     def __init__(self, vetorEntrada, yDesejado):
         self.vetorEntrada = np.array(vetorEntrada)
         self.yDesejado = yDesejado
 
-def carregarImagensTreino():
+def carregarImagensTreino(N_DIGITOS):
     conjuntoTreino = []
     i = 0
     while os.path.exists('digits_training/' + str(i)) and i < N_DIGITOS:
@@ -34,7 +34,7 @@ def carregarImagensTreino():
     return conjuntoTreino
 
 
-def classificarTeste(neoronios):
+def classificarTeste(neoronios, N_DIGITOS):
     resultados = []
 
     i = 0
@@ -52,7 +52,7 @@ def classificarTeste(neoronios):
 
             dado = Dados(image, yDesejado)
 
-            resultados.append([dado, neoronios[0].classificar(neoronios, dado)])
+            resultados.append([dado, neoronios[0][0].classificar(neoronios, dado)])
 
             j += 1
 

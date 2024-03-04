@@ -17,8 +17,15 @@ class Neoronio:
     def calcularV(self):
         self.v = np.dot(self.sinapses, self.vetorEntrada)
 
+
     def funcaoAtivacao(self, v):
         self.y = (1/(1+np.exp(-COEF_APRENDIZADO*v)))
+        
+        #if v > 0:
+        #    self.y = 1
+        #else:
+        #    self.y = 0
+    
 
     def calcularErro(self, yDesejado):
         self.erro = yDesejado - self.y
@@ -33,13 +40,32 @@ class Neoronio:
     @staticmethod
     def classificar(neoronios, dados):
         resultado = []
-        for i in range(len(neoronios)):
-            neoronios[i].calcularV(dados.vetorEntrada)
-    
-            neoronios[i].funcaoAtivacao(neoronios[i].v)
-    
-            resultado.append(neoronios[i].y)
+
+        errosNeoronios = epoca(neoronios, dados)
+        
+        for i in range(len(neoronios[len(neoronios) - 1])):
+            resultado.append(neoronios[len(neoronios) - 1][i].y)
+        
         return resultado
+
+def instanciarNeoronios(shape, n_entradas):
+    print(len(shape))
+    neoronios = []
+    t = []
+    for i in range(shape[0]):
+        t.append(Neoronio(n_entradas, 0))
+    neoronios.append(t)
+
+    
+    for i in range(1, len(shape)):
+        t = []
+        for j in range(shape[i]):
+            t.append(Neoronio(shape[i - 1], i))
+        neoronios.append(t)
+    
+    
+    print (neoronios)
+    return neoronios
 
 def calcularErroMedioVetorEntrada(errosNeoronios):
     erroMedioVetorEntrada = 0
@@ -64,47 +90,53 @@ def calcularErroEpoca(errosMediosVetorEntrada):
 
 def epoca(neoronios, dados):
     errosNeoronios = []
-    for i in range(len(neoronios)):
-        for j in range(len(neoronios[i])):
-            if i == 0:
-                neoronios[i][j].vetorEntrada = dados.vetorEntrada
-                neoronios[i][j].calcularV()
-                neoronios[i][j].funcaoAtivacao(neoronios[i][j].v)
+    for camada in range(len(neoronios)):
+        for neoronio in range(len(neoronios[camada])):
+            if camada == 0: ## Primeira camada
+                neoronios[camada][neoronio].vetorEntrada = dados.vetorEntrada
+                neoronios[camada][neoronio].calcularV()
+                neoronios[camada][neoronio].funcaoAtivacao(neoronios[camada][neoronio].v)
+                #print("y Primeira Camada: ", neoronios[camada][neoronio].y)
+                #print("sinapses Primeira Camada: ", neoronios[camada][neoronio].sinapses)
             
-            if i == len(neoronios) - 1:
-                vetorEntrada = [i.y for i in neoronios[i-1]]
-                neoronios[i][j].vetorEntrada = np.concatenate(([1], vetorEntrada))
+            if camada == len(neoronios) - 1: ## ultima camada
+                vetorEntrada = [i.y for i in neoronios[camada-1]]
+                
+                #print("vetorEntrada: ", vetorEntrada)
+                neoronios[camada][neoronio].vetorEntrada = np.concatenate(([1], vetorEntrada))
+                #neoronios[camada][neoronio].vetorEntrada = dados.vetorEntrada
 
-                neoronios[i][j].calcularV()
-                neoronios[i][j].funcaoAtivacao(neoronios[i][j].v)
-
-                neoronios[i][j].calcularErro(dados.yDesejado[j])
-                errosNeoronios.append(neoronios[i][j].erro)
+                neoronios[camada][neoronio].calcularV()
+                neoronios[camada][neoronio].funcaoAtivacao(neoronios[camada][neoronio].v)
+                neoronios[camada][neoronio].calcularErro(dados.yDesejado[neoronio])
+                #print(f"y do neuronio     {neoronio}: {neoronios[camada][neoronio].y}")
+                #print(f"erro do neuronio  {neoronio}: {neoronios[camada][neoronio].erro}")
+                errosNeoronios.append(neoronios[camada][neoronio].erro)
             
-            if i > 0 and i < len(neoronios) - 1:
-                vetorEntrada = [i.y for i in neoronios[i-1]]
-                neoronios[i][j].vetorEntrada = np.concatenate(([1], vetorEntrada))
+            if camada > 0 and camada < len(neoronios) - 1: ## camadas escondidas
+                vetorEntrada = [i.y for i in neoronios[camada-1]]
+                neoronios[camada][neoronio].vetorEntrada = np.concatenate(([1], vetorEntrada))
 
-                neoronios[i][j].calcularV()
-                neoronios[i][j].funcaoAtivacao(neoronios[i][j].v)
+                neoronios[camada][neoronio].calcularV()
+                neoronios[camada][neoronio].funcaoAtivacao(neoronios[camada][neoronio].v)
                 
     return errosNeoronios
             
 def calcularSs(neoronios):
-    for i in range(len(neoronios) - 1, -1, -1):
-        for j in range(len(neoronios[i])):
+    for camada in range(len(neoronios) - 1, -1, -1):
+        for neoronio in range(len(neoronios[camada])):
             
-            if i == len(neoronios) - 1:
-                neoronios[i][j].s = neoronios[i][j].erro * (COEF_APRENDIZADO * neoronios[i][j].y * (1 - neoronios[i][j].y))
+            if camada == len(neoronios) - 1:
+                neoronios[camada][neoronio].s = neoronios[camada][neoronio].erro * (COEF_APRENDIZADO * neoronios[camada][neoronio].y * (1 - neoronios[camada][neoronio].y))
 
     
             else:
                 somatorio = 0
-                for k in range(len(neoronios[i+1])):
+                for k in range(len(neoronios[camada+1])):
                     
-                    somatorio =+ neoronios[i+1][k].s * neoronios[i+1][k].sinapses[j+1]
+                    somatorio =+ neoronios[camada+1][k].s * neoronios[camada+1][k].sinapses[neoronio+1]
                     
-                neoronios[i][j].s = (COEF_APRENDIZADO * neoronios[i][j].y * (1 - neoronios[i][j].y) * somatorio)
+                neoronios[camada][neoronio].s = (COEF_APRENDIZADO * neoronios[camada][neoronio].y * (1 - neoronios[camada][neoronio].y) * somatorio)
                 
     
             
@@ -130,13 +162,21 @@ def treinar(neoronios, conjuntoTreino):
     print("Tempo Total de treinamento: ", end_time - start_time, "s")
 
 def main():
-    neoronios = [[Neoronio(2, 0)], [Neoronio(1, 1)],[Neoronio(1, 1)],[Neoronio(1, 1)]]
-    neoronios[0][0].sinapses = [1,0,1]
-    neoronios[1][0].sinapses = [1,1]
-    #epoca(neoronios, Dados([1,0,1], 1))
+    N_DIGITOS = 1
+    neoronios = instanciarNeoronios([N_DIGITOS, N_DIGITOS], 16384)  
+    conjuntoTreino = carregarImagensTreino(2)
+    print(conjuntoTreino[0].vetorEntrada, conjuntoTreino[0].yDesejado)
+    #conjuntoTreino = Dados([1, 0, 1], [1])
+
+    #epoca(neoronios, conjuntoTreino[0])
     #calcularSs(neoronios)
     #neoronios[0][0].atualizarSinapses(neoronios)
-    treinar(neoronios, [Dados([1,0,1], [1])])
+
+    #epoca(neoronios, conjuntoTreino[0])
+    #calcularSs(neoronios)
+    #neoronios[0][0].atualizarSinapses(neoronios)
+
+    treinar(neoronios, conjuntoTreino)
 
     print(neoronios[1][0].sinapses)
 
