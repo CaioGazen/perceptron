@@ -3,10 +3,10 @@ import numpy as np
 import random
 import os
 import timeit
-from neoronios_multilayer import *
+from neoronios import *
 from dataTools import *
 
-N_DIGITOS = 2
+N_DIGITOS = 3
 
 def main():
     neoronios = instanciarNeoronios([N_DIGITOS, N_DIGITOS], 16384)  

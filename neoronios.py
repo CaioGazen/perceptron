@@ -38,6 +38,12 @@ class Neoronio:
             resultado.append(neoronios[i].y)
         return resultado
 
+def instanciarNeoronios(shape, n_entradas):
+    t =[]
+    for i in range(shape[0]):
+        t.append(Neoronio(n_entradas))
+    return t
+
 def calcularErroMedioVetorEntrada(errosNeoronios):
     erroMedioVetorEntrada = 0
 
