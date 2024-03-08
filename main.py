@@ -1,9 +1,4 @@
-from matplotlib.image import imread
-import numpy as np
-import random
-import os
-import timeit
-from neoronios import *
+from neoronios_multilayer import *
 from dataTools import *
 
 N_DIGITOS = 3

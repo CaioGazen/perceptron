@@ -31,6 +31,13 @@ def carregarImagensTreino(N_DIGITOS):
             j += 1
 
         i += 1
+
+    rng = np.random.default_rng()
+    conjuntoTreino = np.array(conjuntoTreino)
+    print(conjuntoTreino[2].yDesejado)
+    rng.shuffle(conjuntoTreino, axis=0)
+    print(conjuntoTreino[2].yDesejado)
+    
     return conjuntoTreino
 
 
@@ -86,7 +93,8 @@ def compararResultados(resultados):
     for i in range(len(resultados)):
         resultadoDesejado = interpretarResultado(resultados[i][0].yDesejado)
         resultadoReal = interpretarResultado(resultados[i][1])
-        if resultadoDesejado == resultadoReal: contadorAcertos += 1
+        if resultadoDesejado == resultadoReal: 
+            contadorAcertos += 1
         print("  ", resultadoDesejado,
               "  |   ", resultadoReal, "   | ", i)
     print("taxa de acertos", (contadorAcertos/len(resultados))*100)

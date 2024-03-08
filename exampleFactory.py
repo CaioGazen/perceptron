@@ -1,9 +1,7 @@
-from matplotlib.image import imread
 import numpy as np
 import os
 import cv2 as cv
 import matplotlib.image
-from threading import Thread
 
 
 
@@ -20,7 +18,7 @@ def save():
     global img, LBDown, FOLDER, CURRENT_DIGIT, currentImage
 
     while (1):
-        if os.path.isfile(FOLDER + CURRENT_DIGIT +'/'+ str(currentImage) +'.png') == False:
+        if not os.path.isfile(FOLDER + CURRENT_DIGIT +'/'+ str(currentImage) +'.png'):
             matplotlib.image.imsave(FOLDER + CURRENT_DIGIT +'/'+ str(currentImage) +'.png', img)
             print("saved image to "+ str(currentImage) + '.png')
             currentImage+= 1
@@ -42,7 +40,7 @@ def draw_circle(event, x, y, flags, param):
     if event == cv.EVENT_LBUTTONUP: # check if mouse event is click
         LBDown = False
 
-    if LBDown == True:
+    if LBDown:
         cv.circle(img, (x, y), 5, (0,0,0), -1) # draw filled circle with 100px radius
         
 
