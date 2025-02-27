@@ -9,7 +9,8 @@ def main():
     sair = False
 
     while not sair:
-        print("""
+        print(
+            """
             Escolha uma das alternativas a baixo
                 1 - Treinar rede neural
                 2 - Classificar
@@ -17,7 +18,8 @@ def main():
                 4 - Salvar
                 5 - Carregar
                 6 - Sair
-        """)
+        """
+        )
 
         match input("Escolha uma opção: "):
             case "1":
@@ -47,4 +49,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
