@@ -1,10 +1,11 @@
-from neoronios_multilayer import *
+from neoronios import *
 from dataTools import *
 
-N_DIGITOS = 3
+N_DIGITOS = 2
+
 
 def main():
-    neoronios = instanciarNeoronios([N_DIGITOS, N_DIGITOS], 16384)  
+    neoronios = instanciarNeoronios([N_DIGITOS, N_DIGITOS], 16384)
     sair = False
 
     while not sair:
@@ -33,7 +34,9 @@ def main():
                 salvar(neoronios, input("Digite o nome do aquivo a ser salvo: "))
                 print("Arquivo salvo com sucesso")
             case "5":
-                neoronios = carregar(input("Digite o nome do aquivo que deseja carregar: "))
+                neoronios = carregar(
+                    input("Digite o nome do aquivo que deseja carregar: ")
+                )
                 print("Arquivo carregado com sucesso")
 
             case "6":
@@ -44,3 +47,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
